@@ -1,9 +1,9 @@
 """
-This GUI app converts the DMB file (descr_model_battle.txt)
-from OG (Rome: Total War) to RR (Total War: Rome Remastered).
+This program converts `descr_model_battle.txt` (DMB) from
+_Rome: Total War_ (OG) to _Total War: Rome Remastered_ (RR).
 
-OG2RR DMB Converter v0.1
-Copyright 2021-2022, Vartan Haghverdi
+OG2RR DMB Converter v0.2.0
+Copyright 2022 Vartan Haghverdi
 """
 
 
@@ -29,13 +29,13 @@ font_btn = ("Helvetica", 12)
 
 title = "OG2RR DMB Converter"
 
-about_text = """OG2RR DMB Converter v0.1\n
-Brought to you by the EB Online Team\n
-Copyright 2021-2022, Vartan Haghverdi"""
+about_text = """OG2RR DMB Converter v0.2.0
+Brought to you by the EB Online Team
+Copyright 2022 Vartan Haghverdi"""
 
-instructions = """1. Browse for the OG DMB file.
-2. Select where to save the RR DMB file.
-3. Click on "Convert DMB"."""
+instructions = """1. Select OG DMB.
+2. Select save location.
+3. Convert DMB."""
 
 file_types = (("Text files (.txt)", "*.txt"), ("All files", "*.* *"))
 

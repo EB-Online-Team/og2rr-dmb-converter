@@ -1,28 +1,20 @@
-import re, json
+import re
 from os.path import isfile
 
 
 # regex patterns
-# re_type = re.compile(r"type\s([^;\n]+)")
 re_type = re.compile(r"^\s*type\s([^;\n]+)", re.M)
-# re_skeleton = re.compile(r"skeleton\s([^;\n]+)")
 re_skeleton = re.compile(r"^\s*skeleton\s([^;\n]+)", re.M)
-# re_skeleton_horse = re.compile(r"skeleton_horse([^;\n]+)")
 re_skeleton_horse = re.compile(r"^\s*skeleton_horse([^;\n]+)", re.M)
-# re_skeleton_elephant = re.compile(r"skeleton_elephant([^;\n]+)")
 re_skeleton_elephant = re.compile(r"^\s*skeleton_elephant([^;\n]+)", re.M)
-# re_skeleton_chariot = re.compile(r"skeleton_chariot([^;\n]+)")
 re_skeleton_chariot = re.compile(r"^\s*skeleton_chariot([^;\n]+)", re.M)
-# re_skeleton_camel = re.compile(r"skeleton_camel([^;\n]+)")
 re_skeleton_camel = re.compile(r"^\s*skeleton_camel([^;\n]+)", re.M)
-# re_texture = re.compile(r"texture\s(.+,)?.+(data[^;\n]+)")
 re_texture = re.compile(r"^\s*texture\s(.+,)?.+(data[^;\n]+)", re.M)
-# re_model = re.compile(r"model_flexi(?:_m|_c)?.+(data.+),.+")
-re_model = re.compile(r"^\s*model_flexi(?:_m|_c)?.+(data.+),.+", re.M)
+re_model = re.compile(r"^\s*model_flexi(_m|_c)?.+(data.+),([^;\n]+)", re.M)
 
 
 def convert_dmb_og2rr(dmb_og_path, dmb_rr_path, progress):
-    """Convert OG DMB to RR. Only keep the first model (assume `model_flexi`). Assign generic PBR texture."""
+    """Convert OG DMB to RR. Assign generic PBR texture."""
 
     # list of `type` names skipped due to missing textures
     skipped_types = []
@@ -98,10 +90,14 @@ def convert_dmb_og2rr(dmb_og_path, dmb_rr_path, progress):
             continue
         entry["texture"] = textures
 
-        model = re_model.search(match).group(1).strip()
-        if not model:
+        models = re_model.findall(match)
+        if not models:
             raise Exception(f"Could not find model for {type}.")
-        entry["model"] = model
+        entry["models"] = []
+        for model in models:
+            # (suffix, path, distance)
+            model = tuple(map(lambda x: x.strip(), model))
+            entry["models"].append(model)
 
         entries.append(entry)
 
@@ -130,8 +126,19 @@ def convert_dmb_og2rr(dmb_og_path, dmb_rr_path, progress):
             f.write(f"pbr_texture                 {generic_pbr}\n")
             for texture in entry["texture"]:
                 f.write(f"texture                     {texture}\n")
-            f.write(f"model_flexi                 {entry['model']}\n")
-            f.write(f"no_variation model_flexi    {entry['model']}\n\n")
+            for model in entry["models"]:
+                suffix, path, distance = model
+                if suffix:
+                    f.write(f"model_flexi{suffix}               {path}, {distance}\n")
+                else:
+                    f.write(f"model_flexi                 {path}, {distance}\n")
+            for model in entry["models"]:
+                suffix, path, distance = model
+                if suffix:
+                    f.write(f"no_variation model_flexi{suffix}  {path}, {distance}\n")
+                else:
+                    f.write(f"no_variation model_flexi    {path}, {distance}\n")
+            f.write("\n")
 
     # if any models lacked textures, list them in error file and return skip count
     if len(skipped_types):
