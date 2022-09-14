@@ -2,7 +2,7 @@
 This program converts `descr_model_battle.txt` (DMB) from
 _Rome: Total War_ (OG) to _Total War: Rome Remastered_ (RR).
 
-OG2RR DMB Converter v0.2.0
+OG2RR DMB Converter v0.2.1
 Copyright 2022 Vartan Haghverdi
 """
 
@@ -29,7 +29,7 @@ font_btn = ("Helvetica", 12)
 
 title = "OG2RR DMB Converter"
 
-about_text = """OG2RR DMB Converter v0.2.0
+about_text = """OG2RR DMB Converter v0.2.1
 Brought to you by the EB Online Team
 Copyright 2022 Vartan Haghverdi"""
 
@@ -90,14 +90,15 @@ while True:
 
         # convert DMB; popup for either success or error
         try:
+            log_filepath = "og2rr_log.txt"
             model_skip_count = convert_dmb_og2rr(
-                dmb_og_path, dmb_rr_path, progress.update
+                dmb_og_path, dmb_rr_path, log_filepath, progress.update
             )
             sg.popup("Converted OG DMB to RR.", title="Success", icon=icon)
             if model_skip_count:
-                sg.popup_error(
-                    f"Skipped {model_skip_count} models. See `og2rr_error.txt` for more information.",
-                    title="Error",
+                sg.popup(
+                    f"{model_skip_count} models are missing textures. See {log_filepath}.",
+                    title="Missing textures",
                     icon=icon,
                 )
         except Exception as err:

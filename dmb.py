@@ -3,24 +3,40 @@ from os.path import isfile
 
 
 # regex patterns
-re_type = re.compile(r"^\s*type\s([^;\n]+)", re.M)
-re_skeleton = re.compile(r"^\s*skeleton\s([^;\n]+)", re.M)
-re_skeleton_horse = re.compile(r"^\s*skeleton_horse([^;\n]+)", re.M)
-re_skeleton_elephant = re.compile(r"^\s*skeleton_elephant([^;\n]+)", re.M)
-re_skeleton_chariot = re.compile(r"^\s*skeleton_chariot([^;\n]+)", re.M)
-re_skeleton_camel = re.compile(r"^\s*skeleton_camel([^;\n]+)", re.M)
-re_texture = re.compile(r"^\s*texture\s(.+,)?.+(data[^;\n]+)", re.M)
-re_model = re.compile(r"^\s*model_flexi(_m|_c)?.+(data.+),([^;\n]+)", re.M)
+re_entry = re.compile(r"^type(?:.+\n)+(?:model_sprite|model_tri).+", re.M)
+re_type = re.compile(r"^type\s([^;\n]+)", re.M)
+re_skeleton = re.compile(r"^skeleton\s([^;\n]+)", re.M)
+re_skeleton_horse = re.compile(r"^skeleton_horse([^;\n]+)", re.M)
+re_skeleton_elephant = re.compile(r"^skeleton_elephant([^;\n]+)", re.M)
+re_skeleton_chariot = re.compile(r"^skeleton_chariot([^;\n]+)", re.M)
+re_skeleton_camel = re.compile(r"^skeleton_camel([^;\n]+)", re.M)
+re_texture = re.compile(r"^texture\s(.+,)?.+(data[^;\n]+)", re.M)
+re_model = re.compile(r"^model_flexi(_m|_c)?.+(data.+),([^;\n]+)", re.M)
 
 
-def convert_dmb_og2rr(dmb_og_path, dmb_rr_path, progress):
+def format_dmb(dmb: str) -> str:
+    # remove initial and trailing whitespace
+    dmb = dmb.splitlines()
+    dmb = [line.strip() for line in dmb]
+
+    # remove empty lines
+    dmb = "\n".join(filter(None, dmb))
+
+    # remove comment lines
+    dmb = re.sub(r"^\s*;.*\s*", "", dmb, flags=re.M)
+
+    # separate entries with an empty line
+    dmb = re.sub(r"^type", "\ntype", dmb, flags=re.M)
+    dmb = "\n".join(dmb.splitlines()[1:] + [""])
+
+    return dmb
+
+
+def convert_dmb_og2rr(dmb_og_path, dmb_rr_path, log_filepath, progress):
     """Convert OG DMB to RR. Assign generic PBR texture."""
 
-    # list of `type` names skipped due to missing textures
+    # list of entries with missing textures
     skipped_types = []
-
-    # output text file containing any skipped `type` names
-    error_filepath = "og2rr_error.txt"
 
     # validate OG DMB path
     if not isfile(dmb_og_path):
@@ -29,7 +45,7 @@ def convert_dmb_og2rr(dmb_og_path, dmb_rr_path, progress):
     # read OG DMB and find all entries
     with open(dmb_og_path) as f:
         dmb = f.read()
-        re_entry = re.compile(r"type(?:.+\n)+(?:model_sprite|model_tri).+")
+        dmb = format_dmb(dmb)
         matches = re_entry.findall(dmb)
 
     # parse each entry into a list of dictionaries
@@ -85,9 +101,7 @@ def convert_dmb_og2rr(dmb_og_path, dmb_rr_path, progress):
             else:
                 textures.append(texture_path.strip())
         if not len(textures):
-            # raise Exception(f"Could not find textures for {type}.")
             skipped_types.append(type)
-            continue
         entry["texture"] = textures
 
         models = re_model.findall(match)
@@ -142,16 +156,12 @@ def convert_dmb_og2rr(dmb_og_path, dmb_rr_path, progress):
 
     # if any models lacked textures, list them in error file and return skip count
     if len(skipped_types):
-        with open(error_filepath, mode="w") as f:
+        with open(log_filepath, mode="w") as f:
             f.write(f"OG DMB: {dmb_og_path}\n\n")
-            f.write(
-                f"{len(skipped_types)} `type` names were skipped due to missing `texture` lines:\n\n"
-            )
+            f.write(f"{len(skipped_types)} entries are missing textures:\n\n")
             for type in skipped_types:
                 f.write(f"{type}\n")
-
         return len(skipped_types)
 
     # no skipped models
-    else:
-        return 0
+    return 0
