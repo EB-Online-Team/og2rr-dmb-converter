@@ -1,6 +1,5 @@
 import re
 from os.path import isfile
-from pprint import pprint
 
 # vanilla OG/RR non-human skeletons
 camel_skeletons = frozenset(["fs_camel"])
