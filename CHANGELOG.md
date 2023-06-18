@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.0.0] - 2023-06-17
+
+### Changed
+
+- Ported GUI app from Python to Object Pascal (FPC/Lazarus), reducing release size.
+- Entries with missing textures are now reported in the Messages memo box instead of outputting a log file.
+- Default output filename is the OG path with the suffix `_RR.txt`.
+
+### Added
+
+- Option to add a default texture line to any units missing one. The default texture chosen will be (in decreasing order of priority) the slave texture, merc texture, or first texture.
+
 ## [0.3.0] - 2023-02-17
 
 ### Changed
@@ -42,7 +54,8 @@
 - GUI app written in Python using the PySimpleGUI package.
 - Ability to convert `descr_model_battle.txt` from _Rome: Total War_ (OG) to _Total War: Rome Remastered_ (RR).
 
-[0.3.0]: https://gitlab.com/eb-online/tools/og2rr_dmb/-/releases/v0.3.0
-[0.2.1]: https://gitlab.com/eb-online/tools/og2rr_dmb/-/releases/v0.2.1
-[0.2.0]: https://gitlab.com/eb-online/tools/og2rr_dmb/-/releases/v0.2.0
-[0.1]: https://gitlab.com/eb-online/tools/og2rr_dmb/-/releases/v0.1
+[1.0.0]: https://github.com/vhaghverdi/og2rr-dmb-converter/compare/v0.3.0...v1.0.0
+[0.3.0]: https://github.com/vhaghverdi/og2rr-dmb-converter/compare/v0.2.1...v0.3.0
+[0.2.1]: https://github.com/vhaghverdi/og2rr-dmb-converter/compare/v0.2.0...v0.2.1
+[0.2.0]: https://github.com/vhaghverdi/og2rr-dmb-converter/compare/v0.1...v0.2.0
+[0.1]: https://github.com/vhaghverdi/og2rr-dmb-converter/releases/tag/v0.1
