@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0] - 2024-08-22
+
+### Changed
+
+- Now lists regular models before no_variation models (as opposed to interspersing them).
+- Adopted the GPLv3 license.
+
 ## [1.0.0] - 2023-06-17
 
 ### Changed
@@ -54,6 +61,7 @@
 - GUI app written in Python using the PySimpleGUI package.
 - Ability to convert `descr_model_battle.txt` from _Rome: Total War_ (OG) to _Total War: Rome Remastered_ (RR).
 
+[1.0.1]: https://github.com/vhaghverdi/og2rr-dmb-converter/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/vhaghverdi/og2rr-dmb-converter/compare/v0.3.0...v1.0.0
 [0.3.0]: https://github.com/vhaghverdi/og2rr-dmb-converter/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/vhaghverdi/og2rr-dmb-converter/compare/v0.2.0...v0.2.1

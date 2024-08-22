@@ -25,7 +25,9 @@
 backup/
 *.bak
 lib/
-out/
 
 # Application bundle for Mac OS
 *.app/
+
+# Compiled binaries
+out/

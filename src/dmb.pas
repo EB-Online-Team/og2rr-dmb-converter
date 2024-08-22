@@ -1,3 +1,22 @@
+{
+This program converts `descr_model_battle.txt` (DMB) from _Rome: Total War_ (OG) to _Total War: Rome Remastered_ (RR).
+
+Copyright (C) 2022-2024 Vartan Haghverdi
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+}
+
 unit DMB;
 
 {$mode ObjFPC}{$H+}{$J-}
@@ -37,12 +56,14 @@ type
     FPath: string;
     FDistance: string;
     function FText: string;
+    function FTextNoVariation: string;
   public
     constructor Create(Suffix, Path, Distance: string);
     property Suffix: string read FSuffix write FSuffix;
     property Path: string read FPath write FPath;
     property Distance: string read FDistance write FDistance;
     property Text: string read FText;
+    property TextNoVariation: string read FTextNoVariation;
   end;
 
   TDMBModelList = specialize TObjectList<TDMBModel>;
@@ -178,9 +199,14 @@ end;
 
 function TDMBModel.FText: string;
 begin
-  Result := Format('%-28s%s, %s', ['model_flexi' + Suffix, Path, Distance]) + LineEnding;
-  Result := Result + Format('%-28s%s, %s', ['no_variation model_flexi' +
-    Suffix, Path, Distance]) + LineEnding;
+  Result := Format('%-28s%s, %s', ['model_flexi' + Suffix, Path, Distance]) +
+    LineEnding;
+end;
+
+function TDMBModel.FTextNoVariation: string;
+begin
+  Result := Format('%-28s%s, %s', ['no_variation model_flexi' + Suffix,
+    Path, Distance]) + LineEnding;
 end;
 
 constructor TDMBEntry.Create(TextureFallback: boolean; OptimalDistance: boolean);
@@ -234,6 +260,8 @@ begin
         Texture.Path]) + LineEnding;
   for Model in Models do
     Result := Result + Model.Text;
+  for Model in Models do
+    Result := Result + Model.TextNoVariation;
 end;
 
 procedure TDMBEntry.Clear;

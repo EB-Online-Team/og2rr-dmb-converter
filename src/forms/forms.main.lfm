@@ -15,6 +15,7 @@ object frmMain: TfrmMain
   OnCreate = FormCreate
   OnDropFiles = FormDropFiles
   ParentFont = True
+  LCLVersion = '3.5.0.0'
   object pnlMain: TPanel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -66,9 +67,9 @@ object frmMain: TfrmMain
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 16
       BorderSpacing.Right = 16
-      OnChange = edtOGChange
       TabStop = False
       TabOrder = 1
+      OnChange = edtOGChange
     end
     object edtRR: TEdit
       AnchorSideLeft.Control = edtOG
@@ -98,9 +99,9 @@ object frmMain: TfrmMain
       AutoSize = True
       BorderSpacing.Right = 16
       Caption = 'Browse'
-      OnClick = btnOGClick
       TabOrder = 3
       TabStop = False
+      OnClick = btnOGClick
     end
     object btnRR: TButton
       AnchorSideLeft.Control = btnOG
@@ -115,9 +116,9 @@ object frmMain: TfrmMain
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
       Caption = 'Browse'
-      OnClick = btnRRClick
       TabOrder = 4
       TabStop = False
+      OnClick = btnRRClick
     end
     object cgOptions: TCheckGroup
       AnchorSideLeft.Control = lblRR
@@ -167,8 +168,8 @@ object frmMain: TfrmMain
       AutoSize = True
       Caption = 'Convert'
       Default = True
-      OnClick = btnConvertClick
       TabOrder = 0
+      OnClick = btnConvertClick
     end
   end
   object pnlMessages: TPanel
@@ -211,10 +212,12 @@ object frmMain: TfrmMain
     end
   end
   object dlgOG: TOpenDialog
+    Filter = 'DMB|descr_model_battle.txt|Text files|*.txt|All files|*.*'
     Left = 296
     Top = 16
   end
   object dlgRR: TSaveDialog
+    Filter = 'Text files|*.txt'
     Options = [ofOverwritePrompt, ofEnableSizing, ofViewDetail]
     Left = 432
     Top = 16
@@ -223,7 +226,7 @@ object frmMain: TfrmMain
     Left = 144
     Top = 16
     object mnuMainAbout: TMenuItem
-      Caption = 'About'
+      Caption = '&About'
       OnClick = mnuMainAboutClick
     end
   end
